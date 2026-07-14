@@ -57,7 +57,6 @@ function! s:suite.should_default_export_path_to_current_working_directory() abor
   file test-query.sql
   call db_ui#query#export_csv(['select 1'], {'db_url': 'sqlite:test/dadbod_ui_test.db'})
 
-  let separator = has('win32') || has('win64') ? '\' : '/'
-  call s:expect(g:db_ui_test_export_default).to_equal(getcwd().separator.'test-query.csv')
+  call s:expect(g:db_ui_test_export_default).to_equal(fnamemodify('test-query.csv', ':p'))
   unlet! g:db_ui_test_export_default
 endfunction

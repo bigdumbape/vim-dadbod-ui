@@ -265,6 +265,10 @@ function! s:query.execute_lines(db, lines, is_visual_mode) abort
 endfunction
 
 function! db_ui#query#export_csv_from_buffer(...) abort
+  if empty(s:query_instance) || !has_key(s:query_instance, 'export_csv')
+    return db_ui#notifications#error('Unable to export CSV. Not a valid dbui query buffer.')
+  endif
+
   return s:query_instance.export_csv(get(a:, 1, 0))
 endfunction
 
@@ -295,9 +299,7 @@ function! s:default_csv_path() abort
     let name = 'query'
   endif
 
-  let separator = has('win32') || has('win64') ? '\' : '/'
-  let cwd = substitute(getcwd(), '[\/\]$', '', '')
-  return printf('%s%s%s.csv', cwd, separator, name)
+  return fnamemodify(name.'.csv', ':p')
 endfunction
 
 function! s:export_csv(lines, db, default_path) abort
